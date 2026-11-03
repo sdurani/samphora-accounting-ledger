@@ -2,6 +2,7 @@ package com.samphora;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class Transaction {
@@ -76,8 +77,13 @@ public class Transaction {
         this.amount = amount;
     }
 
-//    @Override
-//    public String toString() {
-//        return String.format();
-//    }
+    @Override
+    public String toString() {
+
+        // Format the transaction for saving to the CSV file
+        String formattedDate = getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String formattedTime = getTime().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+
+        return String.format("%s|%s|%s|%s|%.2f ", formattedDate, formattedTime, description, vendor, amount);
+    }
 }
