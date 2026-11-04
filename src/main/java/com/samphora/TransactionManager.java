@@ -109,8 +109,25 @@ public class TransactionManager {
                 deposits.add(transaction);
             }
         }
-
         // Return the deposits list
         return deposits;
+    }
+
+    // getPayments(): Returns the transactions that are payments
+    public ArrayList<Transaction> getPayments() {
+
+        // Initialize a list of Transaction objects for payments
+        ArrayList<Transaction> payments = new ArrayList<>();
+
+        // Loop through each transaction in the list of all transactions
+        for (Transaction transaction : transactionList) {
+            // Check that the amount field is negative
+            if (transaction.getAmount() < 0) {
+                // Add the matching transaction to the payments list
+                payments.add(transaction);
+            }
+        }
+        // Return the payments list
+        return payments;
     }
 }
