@@ -185,6 +185,7 @@ public class Main {
         transactionManager.addTransaction(description, vendor, amount);
         System.out.println("Payment successful!");
     }
+
     public static void displayLedgerScreen() {}
 
 }
