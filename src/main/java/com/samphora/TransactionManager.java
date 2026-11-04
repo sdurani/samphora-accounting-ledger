@@ -17,13 +17,13 @@ public class TransactionManager {
     // saveTransactionToFile(): Writes a new transaction to the CSV file
     public void saveTransactionToFile(Transaction transaction){
 
-        // Create the transactions file in the Transactions folder
+        // Determine the path to the transaction CSV file
         File file = new File("Transactions/transactions.csv");
 
         // Create the transactions folder if it doesn't exist already
         new File("Transactions").mkdirs();
 
-        // Create the transactions file as a CSV
+        // Open the transactions CSV file for appending new transactions to it
         try (BufferedWriter bufWriter = new BufferedWriter(new FileWriter(file,true))) {
 
             // Check if the file is empty
@@ -44,7 +44,10 @@ public class TransactionManager {
     }
 
     // loadTransactionsFromFile(): Loads previously saved transactions from the CSV into the list
-    public void loadTransactionsFromFile(File file) {
+    public void loadTransactionsFromFile() {
+
+        // Determine the path to the pre-existing transactions CSV file
+        File file = new File("Transactions/transactions.csv");
 
         // Clear the list before loading the pre-existing transactions
         transactionList.clear();
