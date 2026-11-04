@@ -88,4 +88,10 @@ public class TransactionManager {
             throw new RuntimeException(e);
         }
     }
+
+    // Since transactions list is private, this method allows access to a COPY of the list in other classes
+    public ArrayList<Transaction> getAllTransactions() {
+       // Returns a copy of transactions list
+        return new ArrayList<>(transactionList);
+    }
 }
