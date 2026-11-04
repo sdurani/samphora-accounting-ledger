@@ -10,7 +10,14 @@ public class TransactionManager {
     private ArrayList <Transaction> transactionList = new ArrayList<>();
 
     // addTransaction(): Adds a new transaction to the list
-    public void addTransaction(Transaction transaction){
+    public void addTransaction(String description, String vendor, double amount){
+        // Create a Transaction object using the input fields
+        Transaction transaction = new Transaction(LocalDate.now(), LocalTime.now(), description, vendor, amount);
+
+        // Save the transaction to the CSV file
+        saveTransactionToFile(transaction);
+
+        // Add the transaction to the list of transactions
         transactionList.add(transaction);
     }
 

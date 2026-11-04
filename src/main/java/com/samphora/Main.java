@@ -1,7 +1,7 @@
 package com.samphora;
 
-import jdk.swing.interop.SwingInterOpUtils;
-
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Scanner;
 
 public class Main {
@@ -82,7 +82,7 @@ public class Main {
             if (description.isEmpty()) {
                 System.out.println("Description cannot be empty. Please try again.");
             } else {
-                // Amount passes validation
+                // Description passes validation
                 isValid = true;
             }
         }
@@ -109,8 +109,6 @@ public class Main {
             // Try-catch handles inputs that can NOT be converted into numbers
             try {
                 amount = Double.parseDouble(scanner.nextLine().trim());
-                // amount = scanner.nextDouble();
-
                 // Handles inputs that are numbers BUT are negative or too big or $0 and therefore, NOT a valid deposit
                 // Rejects $0, negative numbers, and infinity
                 if (amount <= 0 || !Double.isFinite(amount)) {
@@ -123,6 +121,10 @@ public class Main {
                 System.out.println("Invalid amount. Please enter a positive number.");
             }
         }
+
+        // Call addTransaction to add the new transaction object to the list
+        transactionManager.addTransaction(description, vendor, amount);
+        System.out.println("Deposit has been saved successfully!");
     }
     public static void makePayment() {}
     public static void displayLedgerScreen() {}
