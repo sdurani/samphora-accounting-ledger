@@ -94,4 +94,23 @@ public class TransactionManager {
        // Returns a copy of transactions list
         return new ArrayList<>(transactionList);
     }
+
+    // getDeposits(): Returns the transactions that are deposits
+    public ArrayList<Transaction> getDeposits() {
+
+        // Initialize a list of Transaction objects for deposits
+        ArrayList<Transaction> deposits = new ArrayList<>();
+
+        // Loop through each transaction in the list of all transactions
+        for (Transaction transaction : transactionList) {
+            // Check that the amount field is positive
+            if (transaction.getAmount() > 0) {
+                // Add the matching transaction to deposits list
+                deposits.add(transaction);
+            }
+        }
+
+        // Return the deposits list
+        return deposits;
+    }
 }
