@@ -1,5 +1,6 @@
 package com.samphora;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -37,7 +38,7 @@ public class Main {
             System.out.println("Please select an option:\n" +
                     "1) Make a deposit\n" +
                     "2) Make a payment\n" +
-                    "3) View Ledger\n" +
+                    "3) View Ledger\n\n" +
                     "4) Exit\n" +
                     "> Enter choice (1, 2, 3, or 4): ");
 
@@ -51,7 +52,7 @@ public class Main {
                     makePayment(scanner, transactionManager);
                     break;
                 case "3":
-                    displayLedgerScreen();
+                    displayLedgerScreen(scanner, transactionManager);
                     break;
                 case "4":
                     System.out.println("Goodbye!");
@@ -185,6 +186,60 @@ public class Main {
         transactionManager.addTransaction(description, vendor, amount);
         System.out.println("Payment successful!");
     }
-    public static void displayLedgerScreen() {}
+
+    public static void displayLedgerScreen(Scanner scanner, TransactionManager transactionManager) {
+
+        boolean isRunning = true;
+
+        while (isRunning) {
+            System.out.println("\nLedger\n");
+            System.out.println("Please select an option:\n" +
+                    "1) All Transactions\n" +
+                    "2) Deposits\n" +
+                    "3) Payments\n" +
+                    "4) Reports\n\n" +
+                    "5) Back to Home\n" +
+                    "> Enter choice (1, 2, 3, 4, or 5): ");
+
+            String userChoice = scanner.nextLine().trim();
+
+            switch (userChoice) {
+                case "1":
+                    displayTransactions(transactionManager.getAllTransactions());
+                    break;
+                case "2":
+                    displayTransactions(transactionManager.getDeposits());
+                    break;
+                case "3":
+                   displayTransactions(transactionManager.getPayments());
+                    break;
+                case "4":
+                    displayReportScreen();
+                    break;
+                case "5":
+                    System.out.println("Returning to home...");
+                    isRunning = false;
+                    break;
+                default:
+                    System.out.println("Invalid menu choice. Please enter 1, 2, 3, 4, or 5.");
+            }
+        }
+    }
+
+    // displayTransactions(): Displays whatever transactions it receives
+    public static void displayTransactions(ArrayList<Transaction> transactions) {
+       // Check if the list of transactions is empty
+        if (transactions.isEmpty()) {
+            System.out.println("No transactions found!");
+            return;
+        }
+
+        // Loops through the list passed through and prints each transaction in it
+        for (Transaction transaction : transactions) {
+            System.out.println(transaction);
+        }
+    }
+
+    public static void displayReportScreen() {}
 
 }
