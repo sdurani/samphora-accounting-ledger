@@ -52,6 +52,7 @@ public class Main {
                     makePayment(scanner, transactionManager);
                     break;
                 case "3":
+                    System.out.println("Accessing ledger...");
                     displayLedgerScreen(scanner, transactionManager);
                     break;
                 case "4":
@@ -214,10 +215,11 @@ public class Main {
                    displayTransactions(transactionManager.getPayments());
                     break;
                 case "4":
+                    System.out.println("Accessing reports...");
                     displayReportScreen();
                     break;
                 case "5":
-                    System.out.println("Returning to home...");
+                    System.out.println("Returning to Home...");
                     isRunning = false;
                     break;
                 default:
@@ -228,15 +230,30 @@ public class Main {
 
     // displayTransactions(): Displays whatever transactions it receives
     public static void displayTransactions(ArrayList<Transaction> transactions) {
-       // Check if the list of transactions is empty
-        if (transactions.isEmpty()) {
-            System.out.println("No transactions found!");
-            return;
-        }
 
-        // Loops through the list passed through and prints each transaction in it
-        for (Transaction transaction : transactions) {
-            System.out.println(transaction);
+        // Check if the list of transactions is empty
+        if (transactions.isEmpty()) {
+            System.out.println("No transactions found.");
+        }
+        else {
+            // Sort transactions list from newest to oldest by date, then by time
+            transactions.sort((t1, t2) -> {
+                // Compare dates from new in the list to older in the list
+                int dateCompare = t2.getDate().compareTo(t1.getDate());
+
+                // Check if the dates are the same, in which case, compare the times
+                if (dateCompare == 0) {
+                    int timeCompare = t2.getTime().compareTo(t1.getTime());
+                    return timeCompare;
+                } else {
+                    return dateCompare;
+                }
+            });
+
+            // Display each transaction to user
+            for (Transaction transaction : transactions) {
+                System.out.println(transaction);
+            }
         }
     }
 
