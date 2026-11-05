@@ -53,4 +53,26 @@ public class ReportManager {
         return matchingTransactions;
     }
 
+    // getYearToDate(): Returns filtered transactions from the first of year to the current date
+    public ArrayList<Transaction> getYearToDate(ArrayList<Transaction> transactions){
+
+        // Initialize a list to store the filtered transactions
+        ArrayList<Transaction> matchingTransactions = new ArrayList<>();
+
+        // Initialize the current date
+        LocalDate today = LocalDate.now();
+
+        // Initialize the current year
+        int currentYear = today.getYear();
+
+        // Loop through the transactions
+        for (Transaction transaction : transactions) {
+            if (transaction.getDate().getYear() == currentYear && !transaction.getDate().isAfter(today)) {
+                matchingTransactions.add(transaction);
+            }
+        }
+
+        return matchingTransactions;
+    }
+
 }

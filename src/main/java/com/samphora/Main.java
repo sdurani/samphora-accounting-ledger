@@ -238,7 +238,7 @@ public class Main {
 
         // Check if the list of transactions is empty
         if (transactions.isEmpty()) {
-            System.out.println("No transactions found.");
+            System.out.println("No matching transactions found.");
         }
         else {
             // Sort transactions list from newest to oldest by date, then by time
@@ -292,6 +292,7 @@ public class Main {
                     break;
                 case "3":
                     System.out.println("Year to Date");
+                    displayTransactions(reportManager.getYearToDate(transactionManager.getAllTransactions()));
                     break;
                 case "4":
                     System.out.println("Previous Year");
