@@ -39,8 +39,9 @@ public class Main {
                     "1) Make a deposit\n" +
                     "2) Make a payment\n" +
                     "3) View Ledger\n\n" +
-                    "4) Exit\n" +
-                    "> Enter choice (1, 2, 3, or 4): ");
+
+                    "0) Exit\n" +
+                    "> Enter choice (0, 1, 2, or 3): ");
 
             String userChoice = scanner.nextLine().trim();
 
@@ -55,12 +56,12 @@ public class Main {
                     System.out.println("Accessing ledger...");
                     displayLedgerScreen(scanner, transactionManager);
                     break;
-                case "4":
+                case "0":
                     System.out.println("Goodbye!");
                     isRunning = false;
                     break;
                 default:
-                    System.out.println("Invalid menu choice. Please enter 1, 2, 3, or 4.");
+                    System.out.println("Invalid menu choice. Please enter 0, 1, 2, or 3.");
             }
         }
     }
@@ -199,8 +200,9 @@ public class Main {
                     "2) Deposits\n" +
                     "3) Payments\n" +
                     "4) Reports\n\n" +
-                    "5) Back to Home\n" +
-                    "> Enter choice (1, 2, 3, 4, or 5): ");
+
+                    "0) Back to Home\n" +
+                    "> Enter choice (0, 1, 2, 3, or 4): ");
 
             String userChoice = scanner.nextLine().trim();
 
@@ -218,12 +220,12 @@ public class Main {
                     System.out.println("Accessing reports...");
                     displayReportScreen();
                     break;
-                case "5":
+                case "0":
                     System.out.println("Returning to Home...");
                     isRunning = false;
                     break;
                 default:
-                    System.out.println("Invalid menu choice. Please enter 1, 2, 3, 4, or 5.");
+                    System.out.println("Invalid menu choice. Please enter 0, 1, 2, 3, or 4.");
             }
         }
     }
@@ -257,6 +259,7 @@ public class Main {
         }
     }
 
-    public static void displayReportScreen() {}
+    public static void displayReportScreen() {
+    }
 
 }
