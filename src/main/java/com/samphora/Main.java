@@ -13,6 +13,9 @@ public class Main {
         // Initialize TransactionManager object
         TransactionManager transactionManager = new TransactionManager();
 
+        // Initialize ReportManager object
+        ReportManager reportManager = new ReportManager();
+
         // Load saved transactions
         transactionManager.loadTransactionsFromFile();
 
@@ -21,7 +24,7 @@ public class Main {
         System.out.println("[          ACCOUNTING LEDGER         ]");
 
         // Start the home menu
-        displayHomeScreen(scanner, transactionManager);
+        displayHomeScreen(scanner, transactionManager, reportManager);
 
         // Close scanner after program exit selected
         scanner.close();
@@ -29,7 +32,7 @@ public class Main {
 
     }
 
-    public static void displayHomeScreen(Scanner scanner, TransactionManager transactionManager) {
+    public static void displayHomeScreen(Scanner scanner, TransactionManager transactionManager, ReportManager reportManager) {
         boolean isRunning = true;
 
         while (isRunning) {
@@ -54,7 +57,7 @@ public class Main {
                     break;
                 case "3":
                     System.out.println("Accessing ledger...");
-                    displayLedgerScreen(scanner, transactionManager);
+                    displayLedgerScreen(scanner, transactionManager, reportManager);
                     break;
                 case "0":
                     System.out.println("Goodbye!");
@@ -189,7 +192,7 @@ public class Main {
         System.out.println("Payment successful!");
     }
 
-    public static void displayLedgerScreen(Scanner scanner, TransactionManager transactionManager) {
+    public static void displayLedgerScreen(Scanner scanner, TransactionManager transactionManager, ReportManager reportManager) {
 
         boolean isRunning = true;
 
@@ -218,7 +221,7 @@ public class Main {
                     break;
                 case "4":
                     System.out.println("Accessing reports...");
-                    displayReportScreen(scanner, transactionManager);
+                    displayReportScreen(scanner, transactionManager, reportManager);
                     break;
                 case "0":
                     System.out.println("Returning to Home...");
@@ -259,7 +262,7 @@ public class Main {
         }
     }
 
-    public static void displayReportScreen(Scanner scanner, TransactionManager transactionManager) {
+    public static void displayReportScreen(Scanner scanner, TransactionManager transactionManager, ReportManager reportManager) {
 
         boolean isRunning = true;
 
@@ -281,6 +284,7 @@ public class Main {
             switch (userChoice) {
                 case "1":
                     System.out.println("Month to Date");
+                    displayTransactions(reportManager.getMonthToDate(transactionManager.getAllTransactions()));
                     break;
                 case "2":
                     System.out.println("Previous Month");
