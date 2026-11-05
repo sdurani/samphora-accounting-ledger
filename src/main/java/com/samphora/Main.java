@@ -218,7 +218,7 @@ public class Main {
                     break;
                 case "4":
                     System.out.println("Accessing reports...");
-                    displayReportScreen();
+                    displayReportScreen(scanner, transactionManager);
                     break;
                 case "0":
                     System.out.println("Returning to Home...");
@@ -259,7 +259,51 @@ public class Main {
         }
     }
 
-    public static void displayReportScreen() {
-    }
+    public static void displayReportScreen(Scanner scanner, TransactionManager transactionManager) {
 
+        boolean isRunning = true;
+
+        while (isRunning) {
+            System.out.println("\nReports\n");
+            System.out.println("Run report from...\n" +
+                    "1) Month to Date\n" +
+                    "2) Previous Month\n" +
+                    "3) Year To Date\n" +
+                    "4) Previous Year\n" +
+                    "5) Search by Vendor\n" +
+                    "6) Custom Search\n\n" +
+
+                    "0) Back to Ledger\n" +
+                    "> Enter choice (0, 1, 2, 3, 4, 5, or 6): ");
+
+            String userChoice = scanner.nextLine().trim();
+
+            switch (userChoice) {
+                case "1":
+                    System.out.println("Month to Date");
+                    break;
+                case "2":
+                    System.out.println("Previous Month");
+                    break;
+                case "3":
+                    System.out.println("Year to Date");
+                    break;
+                case "4":
+                    System.out.println("Previous Year");
+                    break;
+                case "5":
+                    System.out.println("Search by Vendor");
+                    break;
+                case "6":
+                    System.out.println("Custom Search");
+                    break;
+                case "0":
+                    System.out.println("Returning to Ledger...");
+                    isRunning = false;
+                    break;
+                default:
+                    System.out.println("Invalid menu choice. Please enter 0, 1, 2, 3, 4, 5, or 6.");
+            }
+        }
+    }
 }
