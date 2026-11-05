@@ -288,6 +288,7 @@ public class Main {
                     break;
                 case "2":
                     System.out.println("Previous Month");
+                    displayTransactions(reportManager.getPreviousMonth(transactionManager.getAllTransactions()));
                     break;
                 case "3":
                     System.out.println("Year to Date");
