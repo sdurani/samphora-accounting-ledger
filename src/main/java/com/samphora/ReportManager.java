@@ -75,4 +75,29 @@ public class ReportManager {
         return matchingTransactions;
     }
 
+    // getPreviousYear(): Returns filtered transactions from the previous year
+    public ArrayList<Transaction> getPreviousYear(ArrayList<Transaction> transactions){
+
+        // Initialize a list to store the filtered transactions
+        ArrayList<Transaction> matchingTransactions = new ArrayList<>();
+
+        // Initialize the current date
+        LocalDate today = LocalDate.now();
+
+        // Initialize the current year
+        int currentYear = today.getYear();
+
+        // Initialize the previous year
+        int previousYear = today.getYear() - 1;
+
+        // Loop through the transactions
+        for (Transaction transaction : transactions) {
+            if (transaction.getDate().getYear() == previousYear) {
+                matchingTransactions.add(transaction);
+            }
+        }
+
+        return matchingTransactions;
+    }
+
 }

@@ -296,6 +296,7 @@ public class Main {
                     break;
                 case "4":
                     System.out.println("Previous Year");
+                    displayTransactions(reportManager.getPreviousYear(transactionManager.getAllTransactions()));
                     break;
                 case "5":
                     System.out.println("Search by Vendor");
