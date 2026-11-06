@@ -19,12 +19,13 @@ public class Main {
         // Initialize ReportManager object
         ReportManager reportManager = new ReportManager();
 
+        // Display Samphora title
+        displaySamphoraHeader();
+        displayLoadingBar("Accessing Samphora Accounting Portal...");
+
         // Load saved transactions
         transactionManager.loadTransactionsFromFile();
         System.out.println("✓ Transactions loaded successfully.");
-
-        // Display Samphora title
-        displaySamphoraHeader();
 
         // Start the home menu
         displayHomeScreen(scanner, transactionManager, reportManager);
@@ -33,9 +34,28 @@ public class Main {
         scanner.close();
     }
 
+    public static void displayLoadingBar(String message) {
+
+        System.out.println("\n✦ " + message);
+
+        for (int i = 0; i < 10; i++) {
+            System.out.print("///");
+            // Make the animation appear immediately
+            System.out.flush();
+
+            try {
+                Thread.sleep(190);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("\nERROR: Loading animation interrupted.");
+                return;
+            }
+        }
+        System.out.println();
+    }
+
 
     public static void displaySamphoraHeader() {
-
         System.out.println("\n");
         System.out.println("/".repeat(72));
         System.out.println("\\".repeat(72));
@@ -46,20 +66,30 @@ public class Main {
         System.out.println("/".repeat(72));
     }
 
+    public static void displayScreenHeader(String title) {
+        String heading = "✦  " + title + "  ✦";
+        System.out.println();
+        System.out.println("-".repeat(44));
+        System.out.println(" ".repeat((44 - heading.length()) / 2) + heading);
+        System.out.println("-".repeat(44));
+    }
 
     public static void displayHomeScreen(Scanner scanner, TransactionManager transactionManager, ReportManager reportManager) {
         boolean isRunning = true;
 
         while (isRunning) {
 
-            System.out.println("\nHome\n");
-            System.out.println("Please select an option:\n" +
-                    "1) Make a deposit\n" +
-                    "2) Make a payment\n" +
-                    "3) View Ledger\n\n" +
-
-                    "0) Exit\n" +
-                    "> Enter choice (0, 1, 2, or 3): ");
+            displayScreenHeader("H O M E");
+            System.out.println(
+                    "\n" +
+                            "   1)  Make a deposit\n" +
+                            "   2)  Make a payment\n" +
+                            "   3)  View Ledger\n" +
+                            "\n" +
+                            "   " + "-".repeat(38) + "\n" +
+                            "   0)  Exit\n"
+            );
+            System.out.print("\n   > Enter choice: ");
 
             String userChoice = scanner.nextLine().trim();
 
@@ -71,11 +101,13 @@ public class Main {
                     makePayment(scanner, transactionManager);
                     break;
                 case "3":
-                    System.out.println("Accessing ledger...");
+                    displayLoadingBar("Accessing ledger...");
                     displayLedgerScreen(scanner, transactionManager, reportManager);
                     break;
                 case "0":
-                    System.out.println("Goodbye!");
+                    System.out.println("\n" + "=".repeat(44));
+                    System.out.println("        ✦ Thank you for using Samphora!");
+                    System.out.println("=".repeat(44));
                     isRunning = false;
                     break;
                 default:
@@ -212,15 +244,18 @@ public class Main {
         boolean isRunning = true;
 
         while (isRunning) {
-            System.out.println("\nLedger\n");
-            System.out.println("Please select an option:\n" +
-                    "1) All Transactions\n" +
-                    "2) Deposits\n" +
-                    "3) Payments\n" +
-                    "4) Reports\n\n" +
-
-                    "0) Back to Home\n" +
-                    "> Enter choice (0, 1, 2, 3, or 4): ");
+            displayScreenHeader("L E D G E R");
+            System.out.println(
+                    "\n" +
+                            "   1)  All Transactions\n" +
+                            "   2)  Deposits\n" +
+                            "   3)  Payments\n" +
+                            "   4)  Reports\n" +
+                            "\n" +
+                            "   " + "-".repeat(38) + "\n" +
+                            "   0)  Back to Home\n"
+            );
+            System.out.print("\n   > Enter choice: ");
 
             String userChoice = scanner.nextLine().trim();
 
@@ -235,7 +270,7 @@ public class Main {
                    displayTransactions(transactionManager.getPayments(), "payments");
                     break;
                 case "4":
-                    System.out.println("Accessing reports...");
+                    displayLoadingBar("Accessing reports...");
                     displayReportScreen(scanner, transactionManager, reportManager);
                     break;
                 case "0":
@@ -369,17 +404,20 @@ public class Main {
         boolean isRunning = true;
 
         while (isRunning) {
-            System.out.println("\nReports\n");
-            System.out.println("Run report from...\n" +
-                    "1) Month to Date\n" +
-                    "2) Previous Month\n" +
-                    "3) Year To Date\n" +
-                    "4) Previous Year\n" +
-                    "5) Search by Vendor\n" +
-                    "6) Custom Search\n\n" +
-
-                    "0) Back to Ledger\n" +
-                    "> Enter choice (0, 1, 2, 3, 4, 5, or 6): ");
+            displayScreenHeader("R E P O R T S");
+            System.out.println(
+                    "\n" +
+                            "   1)  Month to Date\n" +
+                            "   2)  Previous Month\n" +
+                            "   3)  Year to Date\n" +
+                            "   4)  Previous Year\n" +
+                            "   5)  Search by Vendor\n" +
+                            "   6)  Custom Search\n" +
+                            "\n" +
+                            "   " + "-".repeat(38) + "\n" +
+                            "   0)  Back to Ledger\n"
+            );
+            System.out.print("\n   > Enter choice: ");
 
             String userChoice = scanner.nextLine().trim();
 
@@ -563,6 +601,8 @@ public class Main {
                     }
 
                     // Display matching filtered transactions
+                    displayLoadingBar("Searching transactions...");
+
                     System.out.println("\nCustom Search Results\n");
 
                     displayTransactions(reportManager.customSearch(transactionManager.getAllTransactions(),
