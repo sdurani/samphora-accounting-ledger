@@ -1,5 +1,7 @@
 package com.samphora;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -77,38 +79,38 @@ public class Main {
         double amount = 0;
 
         // Initialize input validation variable as false to start the validation loop
-        boolean isValid = false;
+        boolean isValidDeposit = false;
         // Prompt the user for deposit description in the validation loop
-        while (!isValid) {
+        while (!isValidDeposit) {
             System.out.println("Enter deposit description: ");
             description = scanner.nextLine().trim();
             // Handle empty input edge case
             if (description.isEmpty()) {
-                System.out.println("Description cannot be empty. Please try again.");
+                System.out.println("ERROR: Description cannot be empty. Please try again.");
             } else {
                 // Description passes validation
-                isValid = true;
+                isValidDeposit = true;
             }
         }
 
         // Reset the validation variable to continue to the next prompt
-        isValid = false;
+        isValidDeposit = false;
         // Prompt the user for deposit vendor in the validation loop
-        while (!isValid) {
+        while (!isValidDeposit) {
             System.out.println("Enter deposit vendor: ");
             vendor = scanner.nextLine().trim();
             // Handle empty input edge case
             if (vendor.isEmpty()) {
-                System.out.println("Vendor cannot be empty. Please try again.");
+                System.out.println("ERROR: Vendor cannot be empty. Please try again.");
             } else {
-                isValid = true;
+                isValidDeposit = true;
             }
         }
 
         // Reset the validation variable to continue to the next prompt
-        isValid = false;
+        isValidDeposit = false;
         // Prompt the user for deposit amount in the validation loop
-        while (!isValid) {
+        while (!isValidDeposit) {
             System.out.println("Enter deposit $ amount: ");
             // Try-catch handles inputs that can NOT be converted into numbers
             try {
@@ -118,7 +120,7 @@ public class Main {
                 if (amount <= 0 || !Double.isFinite(amount)) {
                     System.out.println("Invalid amount. Please enter a positive real number.");
                 } else {
-                    isValid = true;
+                    isValidDeposit = true;
                 }
             }
             catch (NumberFormatException e) {
@@ -137,38 +139,38 @@ public class Main {
         double amount = 0;
 
         // Initialize input validation variable as false to start the validation loop
-        boolean isValid = false;
+        boolean isValidPayment = false;
         // Prompt the user for payment description in the validation loop
-        while (!isValid) {
+        while (!isValidPayment) {
             System.out.println("Enter payment description: ");
             description = scanner.nextLine().trim();
             // Handle empty input edge case
             if (description.isEmpty()) {
-                System.out.println("Description cannot be empty. Please try again.");
+                System.out.println("ERROR: Description cannot be empty. Please try again.");
             } else {
                 // Description passes validation
-                isValid = true;
+                isValidPayment = true;
             }
         }
 
         // Reset the validation variable to continue to the next prompt
-        isValid = false;
+        isValidPayment = false;
         // Prompt the user for payment vendor in the validation loop
-        while (!isValid) {
+        while (!isValidPayment) {
             System.out.println("Enter payment vendor: ");
             vendor = scanner.nextLine().trim();
             // Handle empty input edge case
             if (vendor.isEmpty()) {
-                System.out.println("Vendor cannot be empty. Please try again.");
+                System.out.println("ERROR: Vendor cannot be empty. Please try again.");
             } else {
-                isValid = true;
+                isValidPayment = true;
             }
         }
 
         // Reset the validation variable to continue to the next prompt
-        isValid = false;
+        isValidPayment = false;
         // Prompt the user for payment amount in the validation loop
-        while (!isValid) {
+        while (!isValidPayment) {
             System.out.println("Enter payment $ amount (as a positive number): ");
             // Try-catch handles inputs that can NOT be converted into numbers
             try {
@@ -179,7 +181,7 @@ public class Main {
                     System.out.println("Invalid amount. Please enter a positive real number.");
                 } else {
                     amount *= -1;
-                    isValid = true;
+                    isValidPayment = true;
                 }
             }
             catch (NumberFormatException e) {
@@ -303,17 +305,17 @@ public class Main {
                     String vendorToSearch = "";
 
                     // Initialize input validation variable as false to start the validation loop
-                    boolean isValid = false;
+                    boolean isValidVendor = false;
 
                     // Prompt the user for a valid vendor name
-                    while (!isValid) {
+                    while (!isValidVendor) {
                         System.out.println("Enter vendor name: ");
                         vendorToSearch = scanner.nextLine().trim();
                         // Handle empty input edge case
                         if (vendorToSearch.isEmpty()) {
-                            System.out.println("Vendor name cannot be empty. Please try again.");
+                            System.out.println("ERROR: Vendor name cannot be empty. Please try again.");
                         } else {
-                            isValid = true;
+                            isValidVendor = true;
                         }
                     }
 
@@ -321,6 +323,151 @@ public class Main {
                     break;
                 case "6":
                     System.out.println("Custom Search");
+                    System.out.println("Press enter to skip any filter.");
+
+                    // Initialize search field inputs
+                    LocalDate startDate = null;
+                    LocalDate endDate = null;
+                    String description;
+                    String vendor;
+                    String transactionType = "both";
+                    // Skipped filters initialized
+                    double minAmount = 0;
+                    double maxAmount = 0;
+
+                    String userInput;
+                    boolean isValidInput = false;
+
+                    // Get optional start date
+                    while (!isValidInput) {
+                        System.out.println("Enter start date (yyyy-MM-dd): ");
+                        userInput = scanner.nextLine().trim();
+
+                        if (userInput.isEmpty()) {
+                            isValidInput = true;
+                        } else {
+                            try {
+                                // Convert the string input into a date
+                                startDate = LocalDate.parse(userInput);
+                                isValidInput = true;
+                            } catch (DateTimeParseException e) {
+                                System.out.println("Invalid date. Please try again in this format: yyyy-MM-dd.");
+                            }
+                        }
+                    }
+
+                    // Get optional end date
+                    isValidInput = false;
+
+                    while (!isValidInput) {
+                        System.out.println("Enter end date (yyyy-MM-dd): ");
+                        userInput = scanner.nextLine().trim();
+
+                        if (userInput.isEmpty()) {
+                            isValidInput = true;
+                        } else {
+                            try {
+                                LocalDate userEndDate = LocalDate.parse(userInput);
+
+                                if (startDate != null && userEndDate.isBefore(startDate)) {
+                                    System.out.println("ERROR: End date cannot be before start date. Please try again.");
+                                } else {
+                                    endDate = userEndDate;
+                                    isValidInput = true;
+                                }
+                            } catch (DateTimeParseException e) {
+                                System.out.println("Invalid date. Please try again in this format: yyyy-MM-dd.");
+                            }
+                        }
+                    }
+
+                    // Get optional description
+                    System.out.println("Enter description (or press Enter to skip)");
+                    description = scanner.nextLine().trim();
+
+                    // Get optional vendor
+                    System.out.println("Enter vendor (or press Enter to skip)");
+                    vendor = scanner.nextLine().trim();
+
+                    // Get transaction type as deposit or payment
+                    isValidInput = false;
+
+                    while (!isValidInput) {
+                        System.out.println("Deposit (D) or Payment (P) or Both (B):");
+                        userInput = scanner.nextLine().trim();
+
+                        if (userInput.equalsIgnoreCase("B")) {
+                            transactionType = "both";
+                            isValidInput = true;
+                        } else if (userInput.equalsIgnoreCase("D")) {
+                            transactionType = "deposit";
+                            isValidInput = true;
+                        } else if (userInput.equalsIgnoreCase("P")) {
+                            transactionType = "payment";
+                            isValidInput = true;
+                        } else {
+                            System.out.println("Invalid choice. Please enter D, P, or B.");
+                        }
+                    }
+
+                    // Get optional minimum transaction amount
+                    isValidInput = false;
+
+                    while (!isValidInput) {
+                        System.out.println("Enter minimum amount (or press Enter to skip): ");
+                        userInput = scanner.nextLine().trim();
+
+                        if (userInput.isEmpty()) {
+                            isValidInput = true;
+                        } else {
+                            try {
+                                double userMinAmount = Double.parseDouble(userInput);
+
+                                if (userMinAmount <= 0 || !Double.isFinite(userMinAmount)) {
+                                    System.out.println("Invalid amount. Please enter a positive real number.");
+                                } else {
+                                    minAmount = userMinAmount;
+                                    isValidInput = true;
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid amount. Please enter a positive real number.");
+                            }
+                        }
+                    }
+
+                    // Get optional maximum amount
+                    isValidInput = false;
+
+                    while (!isValidInput) {
+                        System.out.println("Enter maximum amount (or press Enter to skip): ");
+                        userInput = scanner.nextLine().trim();
+
+                        if (userInput.isEmpty()) {
+                            isValidInput = true;
+                        } else {
+                            try {
+                                double userMaxAmount = Double.parseDouble(userInput);
+
+                                if (userMaxAmount <= 0 || !Double.isFinite(userMaxAmount)) {
+                                    System.out.println("Invalid amount. Please enter a positive real number.");
+                                } else if (minAmount > 0 && userMaxAmount < minAmount) {
+                                    System.out.println("ERROR: Maximum amount cannot be less than minimum amount.");
+                                } else {
+                                    maxAmount = userMaxAmount;
+                                    isValidInput = true;
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid amount. Please enter a positive real number.");
+                            }
+                        }
+                    }
+
+                    // Display matching filtered transactions
+                    System.out.println("\nCustom Search Results\n");
+
+                    displayTransactions(reportManager.customSearch(transactionManager.getAllTransactions(),
+                            startDate, endDate, description, vendor, transactionType, minAmount, maxAmount));
+
                     break;
                 case "0":
                     System.out.println("Returning to Ledger...");

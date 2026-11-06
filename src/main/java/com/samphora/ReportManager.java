@@ -114,4 +114,63 @@ public class ReportManager {
         return matchingTransactions;
     }
 
+    public ArrayList<Transaction> customSearch(ArrayList<Transaction> transactions, LocalDate startDate, LocalDate endDate,
+                                               String description, String vendor, String transactionType, double minAmount, double maxAmount) {
+
+        // Initialize a list to store the filtered transactions
+        ArrayList<Transaction> matchingTransactions = new ArrayList<>();
+
+        for (Transaction transaction : transactions) {
+
+            boolean doesMatch = true;
+
+            // Check start date
+            if (startDate != null && transaction.getDate().isBefore(startDate)) {
+                doesMatch = false;
+            }
+
+            // Check end date
+            if (endDate != null && transaction.getDate().isAfter(endDate)) {
+                doesMatch = false;
+            }
+
+            // Check vendor
+            if (!vendor.isEmpty() && !transaction.getVendor().toLowerCase().contains(vendor.toLowerCase())) {
+                doesMatch = false;
+            }
+
+            // Check description
+            if (!description.isEmpty() && !transaction.getDescription().toLowerCase().contains(description.toLowerCase())) {
+                doesMatch = false;
+            }
+
+            // Check minimum transaction amount
+            if (minAmount > 0 && Math.abs(transaction.getAmount()) < minAmount) {
+                doesMatch = false;
+            }
+
+            // Check maximum transaction amount
+            if (maxAmount > 0 && Math.abs(transaction.getAmount()) > maxAmount) {
+                doesMatch = false;
+            }
+
+            // Check for deposit transactions
+            if (transactionType.equalsIgnoreCase("deposit") && transaction.getAmount() < 0) {
+                doesMatch = false;
+            }
+
+            // Check for payment transactions
+            if (transactionType.equalsIgnoreCase("payment") && transaction.getAmount() > 0) {
+                doesMatch = false;
+            }
+
+            // Add the matching transaction to the list
+            if (doesMatch) {
+                matchingTransactions.add(transaction);
+            }
+        }
+
+        return matchingTransactions;
+    }
+
 }
