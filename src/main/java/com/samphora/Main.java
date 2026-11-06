@@ -106,7 +106,7 @@ public class Main {
                     break;
                 case "0":
                     System.out.println("\n" + "=".repeat(44));
-                    System.out.println("        ✦ Thank you for using Samphora!");
+                    System.out.println("        ✦ Thank you for using Samphora Accounting Portal!");
                     System.out.println("=".repeat(44));
                     isRunning = false;
                     break;
