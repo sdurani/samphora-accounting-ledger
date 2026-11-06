@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.time.format.DateTimeFormatter;
 
 public class Main {
 
@@ -20,19 +21,31 @@ public class Main {
 
         // Load saved transactions
         transactionManager.loadTransactionsFromFile();
+        System.out.println("✓ Transactions loaded successfully.");
 
         // Display Samphora title
-        System.out.println("~*~*~*~*~*~*~* Samphora *~*~*~*~*~*~*~");
-        System.out.println("[          ACCOUNTING LEDGER         ]");
+        displaySamphoraHeader();
 
         // Start the home menu
         displayHomeScreen(scanner, transactionManager, reportManager);
 
         // Close scanner after program exit selected
         scanner.close();
-
-
     }
+
+
+    public static void displaySamphoraHeader() {
+
+        System.out.println("\n");
+        System.out.println("/".repeat(72));
+        System.out.println("\\".repeat(72));
+        System.out.println("========================================================================");
+        System.out.println("                         S A M P H O R A");
+        System.out.println("                        ACCOUNTING LEDGER");
+        System.out.println("========================================================================");
+        System.out.println("/".repeat(72));
+    }
+
 
     public static void displayHomeScreen(Scanner scanner, TransactionManager transactionManager, ReportManager reportManager) {
         boolean isRunning = true;
@@ -66,7 +79,7 @@ public class Main {
                     isRunning = false;
                     break;
                 default:
-                    System.out.println("Invalid menu choice. Please enter 0, 1, 2, or 3.");
+                    System.out.println("! Invalid menu choice. Please enter 0, 1, 2, or 3.");
             }
         }
     }
@@ -130,7 +143,7 @@ public class Main {
 
         // Call addTransaction to add the new deposit object to the list
         transactionManager.addTransaction(description, vendor, amount);
-        System.out.println("Deposit successful!");
+        System.out.println("✦ Deposit successfully recorded.");
     }
     public static void makePayment(Scanner scanner, TransactionManager transactionManager) {
         // Initialize user input variables
@@ -191,7 +204,7 @@ public class Main {
 
         // Call addTransaction to add the new payment object to the list
         transactionManager.addTransaction(description, vendor, amount);
-        System.out.println("Payment successful!");
+        System.out.println("✦ Payment successfully recorded.");
     }
 
     public static void displayLedgerScreen(Scanner scanner, TransactionManager transactionManager, ReportManager reportManager) {
@@ -230,7 +243,7 @@ public class Main {
                     isRunning = false;
                     break;
                 default:
-                    System.out.println("Invalid menu choice. Please enter 0, 1, 2, 3, or 4.");
+                    System.out.println("! Invalid menu choice. Please enter 0, 1, 2, 3, or 4.");
             }
         }
     }
@@ -257,9 +270,36 @@ public class Main {
                 }
             });
 
-            // Display each transaction to user
+            // Display transaction table header
+            System.out.println("\nSAMPHORA / TRANSACTION HISTORY");
+            System.out.println("-".repeat(72));
+
+            System.out.printf("%-12s %-8s %-20s %-16s %12s\n",
+                    "DATE", "TIME", "DESCRIPTION", "VENDOR", "AMOUNT");
+
+            System.out.println("-".repeat(72));
+
+            // Display each transaction in a formatted row
             for (Transaction transaction : transactions) {
-                System.out.println(transaction);
+
+                // Format the time to hours and minutes
+                String time = transaction.getTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+
+                // Format the amount with respective positive or negative sign
+                String formattedAmount;
+
+                if (transaction.getAmount() < 0) {
+                    formattedAmount = String.format("-$%,.2f", Math.abs(transaction.getAmount()));
+                } else {
+                    formattedAmount = String.format("+$%,.2f", transaction.getAmount());
+                }
+
+                System.out.printf("%-12s %-8s %-20.20s %-16.16s %12s\n",
+                        transaction.getDate(),
+                        time,
+                        transaction.getDescription(),
+                        transaction.getVendor(),
+                        formattedAmount);
             }
 
             // Display the summary for the transaction view
@@ -291,27 +331,37 @@ public class Main {
 
         double netIncome = totalRevenue - totalExpenses;
 
-        System.out.println("----------------------------------------");
+        // Format totals
+        String formattedRevenue = String.format("+ $%,.2f", totalRevenue);
+        String formattedExpenses = String.format("- $%,.2f", totalExpenses);
+        String formattedNetIncome;
 
-        if (displayTransactionType.equalsIgnoreCase("deposits")) {
-            System.out.printf("Total Deposits (%d): +$%.2f\n", depositCount, totalRevenue);
-
-        } else if (displayTransactionType.equalsIgnoreCase("payments")) {
-            System.out.printf("Total Payments (%d): -$%.2f\n", paymentCount, totalExpenses);
-
+        if (netIncome < 0) {
+            formattedNetIncome = String.format("- $%,.2f", Math.abs(netIncome));
         } else {
-            System.out.printf("Total Revenue (%d):  +$%.2f\n", depositCount, totalRevenue);
-
-            System.out.printf("Total Expenses (%d): -$%.2f\n", paymentCount, totalExpenses);
-
-            if (netIncome < 0) {
-                System.out.printf("Net Income: -$%.2f\n", Math.abs(netIncome));
-            } else {
-                System.out.printf("Net Income: +$%.2f\n", netIncome);
-            }
+            formattedNetIncome = String.format("+ $%,.2f", netIncome);
         }
 
-        System.out.println("----------------------------------------");
+        // Display transaction summary
+        System.out.println("-".repeat(72));
+
+        if (displayTransactionType.equalsIgnoreCase("deposits")) {
+            System.out.printf("%-59s %12s\n", "TOTAL DEPOSITS (" + depositCount + ")", formattedRevenue);
+
+        } else if (displayTransactionType.equalsIgnoreCase("payments")) {
+            System.out.printf("%-59s %12s\n", "TOTAL PAYMENTS (" + paymentCount + ")", formattedExpenses);
+
+        } else {
+            System.out.printf("%-59s %12s\n", "TOTAL REVENUE (" + depositCount + ")", formattedRevenue);
+
+            System.out.printf("%-59s %12s\n", "TOTAL EXPENSES (" + paymentCount + ")", formattedExpenses);
+
+            System.out.println("-".repeat(72));
+
+            System.out.printf("%-59s %12s\n", "NET INCOME", formattedNetIncome);
+        }
+
+        System.out.println("=".repeat(72));
     }
 
     public static void displayReportScreen(Scanner scanner, TransactionManager transactionManager, ReportManager reportManager) {
@@ -524,7 +574,7 @@ public class Main {
                     isRunning = false;
                     break;
                 default:
-                    System.out.println("Invalid menu choice. Please enter 0, 1, 2, 3, 4, 5, or 6.");
+                    System.out.println("! Invalid menu choice. Please enter 0, 1, 2, 3, 4, 5, or 6.");
             }
         }
     }
