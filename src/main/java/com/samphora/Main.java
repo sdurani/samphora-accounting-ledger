@@ -213,13 +213,13 @@ public class Main {
 
             switch (userChoice) {
                 case "1":
-                    displayTransactions(transactionManager.getAllTransactions());
+                    displayTransactions(transactionManager.getAllTransactions(), "all");
                     break;
                 case "2":
-                    displayTransactions(transactionManager.getDeposits());
+                    displayTransactions(transactionManager.getDeposits(), "deposits");
                     break;
                 case "3":
-                   displayTransactions(transactionManager.getPayments());
+                   displayTransactions(transactionManager.getPayments(), "payments");
                     break;
                 case "4":
                     System.out.println("Accessing reports...");
@@ -236,7 +236,7 @@ public class Main {
     }
 
     // displayTransactions(): Displays whatever transactions it receives
-    public static void displayTransactions(ArrayList<Transaction> transactions) {
+    public static void displayTransactions(ArrayList<Transaction> transactions, String displayTransactionType) {
 
         // Check if the list of transactions is empty
         if (transactions.isEmpty()) {
@@ -261,7 +261,57 @@ public class Main {
             for (Transaction transaction : transactions) {
                 System.out.println(transaction);
             }
+
+            // Display the summary for the transaction view
+            displayTransactionSummary(transactions, displayTransactionType);
         }
+    }
+
+    public static void displayTransactionSummary(ArrayList<Transaction> transactions, String displayTransactionType) {
+
+        // Initialize variables to store transaction totals
+        double totalRevenue = 0;
+        double totalExpenses = 0;
+        // Initialize variables to store number of transactions
+        int depositCount = 0;
+        int paymentCount = 0;
+
+        // Calculate totals for the transactions
+        for (Transaction transaction : transactions) {
+            if (transaction.getAmount() > 0) {
+                // Update total revenue with each deposit transaction
+                totalRevenue += transaction.getAmount();
+                depositCount++;
+            } else if (transaction.getAmount() < 0) {
+                // Update total expenses with each payment transaction
+                totalExpenses += Math.abs(transaction.getAmount());
+                paymentCount++;
+            }
+        }
+
+        double netIncome = totalRevenue - totalExpenses;
+
+        System.out.println("----------------------------------------");
+
+        if (displayTransactionType.equalsIgnoreCase("deposits")) {
+            System.out.printf("Total Deposits (%d): +$%.2f\n", depositCount, totalRevenue);
+
+        } else if (displayTransactionType.equalsIgnoreCase("payments")) {
+            System.out.printf("Total Payments (%d): -$%.2f\n", paymentCount, totalExpenses);
+
+        } else {
+            System.out.printf("Total Revenue (%d):  +$%.2f\n", depositCount, totalRevenue);
+
+            System.out.printf("Total Expenses (%d): -$%.2f\n", paymentCount, totalExpenses);
+
+            if (netIncome < 0) {
+                System.out.printf("Net Income: -$%.2f\n", Math.abs(netIncome));
+            } else {
+                System.out.printf("Net Income: +$%.2f\n", netIncome);
+            }
+        }
+
+        System.out.println("----------------------------------------");
     }
 
     public static void displayReportScreen(Scanner scanner, TransactionManager transactionManager, ReportManager reportManager) {
@@ -286,19 +336,19 @@ public class Main {
             switch (userChoice) {
                 case "1":
                     System.out.println("Month to Date");
-                    displayTransactions(reportManager.getMonthToDate(transactionManager.getAllTransactions()));
+                    displayTransactions(reportManager.getMonthToDate(transactionManager.getAllTransactions()), "all");
                     break;
                 case "2":
                     System.out.println("Previous Month");
-                    displayTransactions(reportManager.getPreviousMonth(transactionManager.getAllTransactions()));
+                    displayTransactions(reportManager.getPreviousMonth(transactionManager.getAllTransactions()), "all");
                     break;
                 case "3":
                     System.out.println("Year to Date");
-                    displayTransactions(reportManager.getYearToDate(transactionManager.getAllTransactions()));
+                    displayTransactions(reportManager.getYearToDate(transactionManager.getAllTransactions()), "all");
                     break;
                 case "4":
                     System.out.println("Previous Year");
-                    displayTransactions(reportManager.getPreviousYear(transactionManager.getAllTransactions()));
+                    displayTransactions(reportManager.getPreviousYear(transactionManager.getAllTransactions()), "all");
                     break;
                 case "5":
                     System.out.println("Search by Vendor");
@@ -319,11 +369,11 @@ public class Main {
                         }
                     }
 
-                    displayTransactions(reportManager.searchByVendor(transactionManager.getAllTransactions(), vendorToSearch));
+                    displayTransactions(reportManager.searchByVendor(transactionManager.getAllTransactions(), vendorToSearch), "all");
                     break;
                 case "6":
                     System.out.println("Custom Search");
-                    System.out.println("Press enter to skip any filter.");
+                    System.out.println("Press enter to skip optional filters.");
 
                     // Initialize search field inputs
                     LocalDate startDate = null;
@@ -393,7 +443,7 @@ public class Main {
                     isValidInput = false;
 
                     while (!isValidInput) {
-                        System.out.println("Deposit (D) or Payment (P) or Both (B):");
+                        System.out.println("[Required !] Deposit (D) or Payment (P) or Both (B):");
                         userInput = scanner.nextLine().trim();
 
                         if (userInput.equalsIgnoreCase("B")) {
@@ -466,7 +516,7 @@ public class Main {
                     System.out.println("\nCustom Search Results\n");
 
                     displayTransactions(reportManager.customSearch(transactionManager.getAllTransactions(),
-                            startDate, endDate, description, vendor, transactionType, minAmount, maxAmount));
+                            startDate, endDate, description, vendor, transactionType, minAmount, maxAmount), "all");
 
                     break;
                 case "0":
