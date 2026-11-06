@@ -7,7 +7,6 @@ import java.util.Locale;
 
 public class Transaction {
 
-    // Declare private variable fields for Transaction object
     private LocalDate date;
     private LocalTime time;
     private String description;
@@ -16,7 +15,6 @@ public class Transaction {
 
 
     // CONSTRUCTOR
-    // Creates a new Transaction instance, initializing all fields
     public Transaction(LocalDate date, LocalTime time, String description, String vendor, double amount) {
         this.date = date;
         this.time = time;
@@ -84,6 +82,7 @@ public class Transaction {
         String formattedDate = getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String formattedTime = getTime().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
 
-        return String.format("%s|%s|%s|%s|%.2f ", formattedDate, formattedTime, description, vendor, amount);
+        // Use pipe delimiters to match the format expected by TransactionManager
+        return String.format(Locale.US, "%s|%s|%s|%s|%.2f", formattedDate, formattedTime, description, vendor, amount);
     }
 }

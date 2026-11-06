@@ -11,13 +11,11 @@ public class TransactionManager {
 
     // addTransaction(): Adds a new transaction to the list
     public void addTransaction(String description, String vendor, double amount){
-        // Create a Transaction object using the input fields
         Transaction transaction = new Transaction(LocalDate.now(), LocalTime.now(), description, vendor, amount);
 
-        // Save the transaction to the CSV file
+        // Save to the CSV file before updating the in-memory list
         saveTransactionToFile(transaction);
 
-        // Add the transaction to the list of transactions
         transactionList.add(transaction);
     }
 
@@ -30,17 +28,15 @@ public class TransactionManager {
         // Create the transactions folder if it doesn't exist already
         new File("Transactions").mkdirs();
 
-        // Open the transactions CSV file for appending new transactions to it
+        // Append transactions without overwriting existing records
         try (BufferedWriter bufWriter = new BufferedWriter(new FileWriter(file,true))) {
 
-            // Check if the file is empty
+            // Only write the CSV header when the file is new or empty
             if (file.length() == 0) {
-                // Write the header for the file
                 bufWriter.write("date|time|description|vendor|amount");
                 bufWriter.newLine();
             }
 
-            // Write the transaction in the file
             bufWriter.write(transaction.toString());
             bufWriter.newLine();
 
@@ -53,10 +49,9 @@ public class TransactionManager {
     // loadTransactionsFromFile(): Loads previously saved transactions from the CSV into the list
     public void loadTransactionsFromFile() {
 
-        // Determine the path to the pre-existing transactions CSV file
         File file = new File("Transactions/transactions.csv");
 
-        // Clear the list before loading the pre-existing transactions
+        // Clear the list before loading the pre-existing transactions to avoid duplicates when reloading the file
         transactionList.clear();
 
         // Stop the method if there is no pre-existing file
@@ -64,32 +59,23 @@ public class TransactionManager {
             return;
         }
 
-        // Open the transactions file
         try (BufferedReader bufReader = new BufferedReader(new FileReader(file))) {
 
-            // Skip the header line
             bufReader.readLine();
-
-            // Initialize variable to store a transaction line
             String line;
 
-            // Read each transaction's info
             while ((line = bufReader.readLine()) != null) {
-                // Before splitting at the pipe: date|time|description|vendor|amount
+                // Split each row using the pipe delimiter rather than a comma
                 String[] lineSplitParts = line.split("\\|");
-                // After splitting at the pipe: parts[0] = date, parts[1] = time, etc...
 
-                // Convert and store the fields appropriately
                 LocalDate date = LocalDate.parse(lineSplitParts[0]);
                 LocalTime time = LocalTime.parse(lineSplitParts[1]);
                 String description = lineSplitParts[2];
                 String vendor = lineSplitParts[3];
                 double amount = Double.parseDouble(lineSplitParts[4]);
 
-                // Create a Transaction object using the fields
                 Transaction transaction = new Transaction(date, time, description, vendor, amount);
 
-                // Add the transaction from the CSV to the list of transactions
                 transactionList.add(transaction);
             }
 
@@ -99,45 +85,37 @@ public class TransactionManager {
         }
     }
 
-    // Since transactions list is private, this method allows access to a COPY of the list in other classes
+    // Since transactions list is private, this method allows access to a shallow copy of the list in other classes
     public ArrayList<Transaction> getAllTransactions() {
-       // Returns a copy of transactions list
         return new ArrayList<>(transactionList);
     }
 
     // getDeposits(): Returns the transactions that are deposits
     public ArrayList<Transaction> getDeposits() {
 
-        // Initialize a list of Transaction objects for deposits
         ArrayList<Transaction> deposits = new ArrayList<>();
 
-        // Loop through each transaction in the list of all transactions
         for (Transaction transaction : transactionList) {
-            // Check that the amount field is positive
+            // Positive amounts represent deposits
             if (transaction.getAmount() > 0) {
-                // Add the matching transaction to deposits list
                 deposits.add(transaction);
             }
         }
-        // Return the deposits list
+
         return deposits;
     }
 
     // getPayments(): Returns the transactions that are payments
     public ArrayList<Transaction> getPayments() {
 
-        // Initialize a list of Transaction objects for payments
         ArrayList<Transaction> payments = new ArrayList<>();
 
-        // Loop through each transaction in the list of all transactions
         for (Transaction transaction : transactionList) {
-            // Check that the amount field is negative
+            // Negative amounts represent payments
             if (transaction.getAmount() < 0) {
-                // Add the matching transaction to the payments list
                 payments.add(transaction);
             }
         }
-        // Return the payments list
         return payments;
     }
 }

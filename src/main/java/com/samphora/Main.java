@@ -10,13 +10,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // Initialize Scanner object
+        // Initialize objects
         Scanner scanner = new Scanner(System.in);
-
-        // Initialize TransactionManager object
         TransactionManager transactionManager = new TransactionManager();
-
-        // Initialize ReportManager object
         ReportManager reportManager = new ReportManager();
 
         // Display Samphora title
@@ -27,10 +23,8 @@ public class Main {
         transactionManager.loadTransactionsFromFile();
         System.out.println("✓ Transactions loaded successfully.");
 
-        // Start the home menu
         displayHomeScreen(scanner, transactionManager, reportManager);
 
-        // Close scanner after program exit selected
         scanner.close();
     }
 
@@ -40,7 +34,7 @@ public class Main {
 
         for (int i = 0; i < 10; i++) {
             System.out.print("///");
-            // Make the animation appear immediately
+            // Flush the output so the loading animation updates
             System.out.flush();
 
             try {
@@ -118,33 +112,29 @@ public class Main {
 
     public static void addDeposit(Scanner scanner, TransactionManager transactionManager) {
 
-        // Initialize user input variables
         String description = "";
         String vendor = "";
         double amount = 0;
 
-        // Initialize input validation variable as false to start the validation loop
         boolean isValidDeposit = false;
-        // Prompt the user for deposit description in the validation loop
+
         while (!isValidDeposit) {
             System.out.println("Enter deposit description: ");
             description = scanner.nextLine().trim();
-            // Handle empty input edge case
+
             if (description.isEmpty()) {
                 System.out.println("ERROR: Description cannot be empty. Please try again.");
             } else {
-                // Description passes validation
                 isValidDeposit = true;
             }
         }
 
-        // Reset the validation variable to continue to the next prompt
         isValidDeposit = false;
-        // Prompt the user for deposit vendor in the validation loop
+
         while (!isValidDeposit) {
             System.out.println("Enter deposit vendor: ");
             vendor = scanner.nextLine().trim();
-            // Handle empty input edge case
+
             if (vendor.isEmpty()) {
                 System.out.println("ERROR: Vendor cannot be empty. Please try again.");
             } else {
@@ -152,15 +142,13 @@ public class Main {
             }
         }
 
-        // Reset the validation variable to continue to the next prompt
         isValidDeposit = false;
-        // Prompt the user for deposit amount in the validation loop
+
         while (!isValidDeposit) {
             System.out.println("Enter deposit $ amount: ");
             // Try-catch handles inputs that can NOT be converted into numbers
             try {
                 amount = Double.parseDouble(scanner.nextLine().trim());
-                // Handles inputs that are numbers BUT are negative or too big or $0 and therefore, NOT a valid deposit
                 // Rejects $0, negative numbers, and infinity
                 if (amount <= 0 || !Double.isFinite(amount)) {
                     System.out.println("Invalid amount. Please enter a positive real number.");
@@ -173,38 +161,33 @@ public class Main {
             }
         }
 
-        // Call addTransaction to add the new deposit object to the list
         transactionManager.addTransaction(description, vendor, amount);
         System.out.println("✦ Deposit successfully recorded.");
     }
     public static void makePayment(Scanner scanner, TransactionManager transactionManager) {
-        // Initialize user input variables
         String description = "";
         String vendor = "";
         double amount = 0;
 
-        // Initialize input validation variable as false to start the validation loop
         boolean isValidPayment = false;
-        // Prompt the user for payment description in the validation loop
+
         while (!isValidPayment) {
             System.out.println("Enter payment description: ");
             description = scanner.nextLine().trim();
-            // Handle empty input edge case
+
             if (description.isEmpty()) {
                 System.out.println("ERROR: Description cannot be empty. Please try again.");
             } else {
-                // Description passes validation
                 isValidPayment = true;
             }
         }
 
-        // Reset the validation variable to continue to the next prompt
         isValidPayment = false;
-        // Prompt the user for payment vendor in the validation loop
+
         while (!isValidPayment) {
             System.out.println("Enter payment vendor: ");
             vendor = scanner.nextLine().trim();
-            // Handle empty input edge case
+
             if (vendor.isEmpty()) {
                 System.out.println("ERROR: Vendor cannot be empty. Please try again.");
             } else {
@@ -212,19 +195,18 @@ public class Main {
             }
         }
 
-        // Reset the validation variable to continue to the next prompt
         isValidPayment = false;
-        // Prompt the user for payment amount in the validation loop
+
         while (!isValidPayment) {
             System.out.println("Enter payment $ amount (as a positive number): ");
             // Try-catch handles inputs that can NOT be converted into numbers
             try {
                 amount = Double.parseDouble(scanner.nextLine().trim());
-                // Handles inputs that are numbers BUT are negative or too big or $0 and therefore, NOT a valid deposit
                 // Rejects $0, negative numbers, and infinity
                 if (amount <= 0 || !Double.isFinite(amount)) {
                     System.out.println("Invalid amount. Please enter a positive real number.");
                 } else {
+                    // Store payments as negative amounts
                     amount *= -1;
                     isValidPayment = true;
                 }
@@ -234,7 +216,6 @@ public class Main {
             }
         }
 
-        // Call addTransaction to add the new payment object to the list
         transactionManager.addTransaction(description, vendor, amount);
         System.out.println("✦ Payment successfully recorded.");
     }
@@ -286,14 +267,12 @@ public class Main {
     // displayTransactions(): Displays whatever transactions it receives
     public static void displayTransactions(ArrayList<Transaction> transactions, String displayTransactionType) {
 
-        // Check if the list of transactions is empty
         if (transactions.isEmpty()) {
             System.out.println("No matching transactions found.");
         }
         else {
             // Sort transactions list from newest to oldest by date, then by time
             transactions.sort((t1, t2) -> {
-                // Compare dates from new in the list to older in the list
                 int dateCompare = t2.getDate().compareTo(t1.getDate());
 
                 // Check if the dates are the same, in which case, compare the times
@@ -317,10 +296,7 @@ public class Main {
             // Display each transaction in a formatted row
             for (Transaction transaction : transactions) {
 
-                // Format the time to hours and minutes
                 String time = transaction.getTime().format(DateTimeFormatter.ofPattern("HH:mm"));
-
-                // Format the amount with respective positive or negative sign
                 String formattedAmount;
 
                 if (transaction.getAmount() < 0) {
@@ -329,6 +305,7 @@ public class Main {
                     formattedAmount = String.format("+$%,.2f", transaction.getAmount());
                 }
 
+                // Align table columns
                 System.out.printf("%-12s %-8s %-20.20s %-16.16s %12s\n",
                         transaction.getDate(),
                         time,
@@ -337,28 +314,23 @@ public class Main {
                         formattedAmount);
             }
 
-            // Display the summary for the transaction view
             displayTransactionSummary(transactions, displayTransactionType);
         }
     }
 
     public static void displayTransactionSummary(ArrayList<Transaction> transactions, String displayTransactionType) {
 
-        // Initialize variables to store transaction totals
         double totalRevenue = 0;
         double totalExpenses = 0;
-        // Initialize variables to store number of transactions
         int depositCount = 0;
         int paymentCount = 0;
 
-        // Calculate totals for the transactions
         for (Transaction transaction : transactions) {
             if (transaction.getAmount() > 0) {
-                // Update total revenue with each deposit transaction
                 totalRevenue += transaction.getAmount();
                 depositCount++;
             } else if (transaction.getAmount() < 0) {
-                // Update total expenses with each payment transaction
+                // Use absolute values so expenses can be subtracted from revenue
                 totalExpenses += Math.abs(transaction.getAmount());
                 paymentCount++;
             }
@@ -366,7 +338,6 @@ public class Main {
 
         double netIncome = totalRevenue - totalExpenses;
 
-        // Format totals
         String formattedRevenue = String.format("+ $%,.2f", totalRevenue);
         String formattedExpenses = String.format("- $%,.2f", totalExpenses);
         String formattedNetIncome;
@@ -377,7 +348,6 @@ public class Main {
             formattedNetIncome = String.format("+ $%,.2f", netIncome);
         }
 
-        // Display transaction summary
         System.out.println("-".repeat(72));
 
         if (displayTransactionType.equalsIgnoreCase("deposits")) {
@@ -442,14 +412,12 @@ public class Main {
                     System.out.println("Search by Vendor");
                     String vendorToSearch = "";
 
-                    // Initialize input validation variable as false to start the validation loop
                     boolean isValidVendor = false;
 
-                    // Prompt the user for a valid vendor name
                     while (!isValidVendor) {
                         System.out.println("Enter vendor name: ");
                         vendorToSearch = scanner.nextLine().trim();
-                        // Handle empty input edge case
+
                         if (vendorToSearch.isEmpty()) {
                             System.out.println("ERROR: Vendor name cannot be empty. Please try again.");
                         } else {
@@ -463,13 +431,12 @@ public class Main {
                     System.out.println("Custom Search");
                     System.out.println("Press enter to skip optional filters.");
 
-                    // Initialize search field inputs
                     LocalDate startDate = null;
                     LocalDate endDate = null;
                     String description;
                     String vendor;
                     String transactionType = "both";
-                    // Skipped filters initialized
+                    // Zero indicates that an optional amount filter was skipped
                     double minAmount = 0;
                     double maxAmount = 0;
 
@@ -485,7 +452,6 @@ public class Main {
                             isValidInput = true;
                         } else {
                             try {
-                                // Convert the string input into a date
                                 startDate = LocalDate.parse(userInput);
                                 isValidInput = true;
                             } catch (DateTimeParseException e) {
@@ -600,7 +566,6 @@ public class Main {
                         }
                     }
 
-                    // Display matching filtered transactions
                     displayLoadingBar("Searching transactions...");
 
                     System.out.println("\nCustom Search Results\n");
