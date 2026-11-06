@@ -84,15 +84,29 @@ public class ReportManager {
         // Initialize the current date
         LocalDate today = LocalDate.now();
 
-        // Initialize the current year
-        int currentYear = today.getYear();
-
         // Initialize the previous year
         int previousYear = today.getYear() - 1;
 
         // Loop through the transactions
         for (Transaction transaction : transactions) {
             if (transaction.getDate().getYear() == previousYear) {
+                matchingTransactions.add(transaction);
+            }
+        }
+
+        return matchingTransactions;
+    }
+
+    // searchByVendor(): Finds transactions from a specific vendor
+    public ArrayList<Transaction> searchByVendor(ArrayList<Transaction> transactions, String vendorToSearch){
+
+        // Initialize a list to store the filtered transactions
+        ArrayList<Transaction> matchingTransactions = new ArrayList<>();
+
+        // Loop through the transactions
+        for (Transaction transaction : transactions) {
+            // Check for the search text in the vendors
+            if (transaction.getVendor().toLowerCase().contains(vendorToSearch.toLowerCase())) {
                 matchingTransactions.add(transaction);
             }
         }

@@ -300,6 +300,24 @@ public class Main {
                     break;
                 case "5":
                     System.out.println("Search by Vendor");
+                    String vendorToSearch = "";
+
+                    // Initialize input validation variable as false to start the validation loop
+                    boolean isValid = false;
+
+                    // Prompt the user for a valid vendor name
+                    while (!isValid) {
+                        System.out.println("Enter vendor name: ");
+                        vendorToSearch = scanner.nextLine().trim();
+                        // Handle empty input edge case
+                        if (vendorToSearch.isEmpty()) {
+                            System.out.println("Vendor name cannot be empty. Please try again.");
+                        } else {
+                            isValid = true;
+                        }
+                    }
+
+                    displayTransactions(reportManager.searchByVendor(transactionManager.getAllTransactions(), vendorToSearch));
                     break;
                 case "6":
                     System.out.println("Custom Search");
